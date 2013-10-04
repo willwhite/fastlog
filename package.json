@@ -1,0 +1,23 @@
+{
+  "name": "fastlog",
+  "version": "0.0.0",
+  "description": "Stupid simple logging for Node.js.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/willwhite/fastlog.git"
+  },
+  "author": "Will White",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "mocha": "~1.13.0",
+    "sinon": "~1.7.3"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2"
+  }
+}
