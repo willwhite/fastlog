@@ -11,6 +11,9 @@ Create a logger:
 var logger = require('fastlog')(category, level);
 ```
 
+`logger` then has a functions named after each of the available log levels.
+Levels are (in order of severity) `debug`, `info`, `warn`, `error` and `fatal`.
+
 Both arguments are optional. `category` defaults to to "default" and `level`
 defaults to "info". Anything less severe than the given `level` will not be
 logged.
