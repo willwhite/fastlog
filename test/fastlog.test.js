@@ -3,15 +3,14 @@ var sinon = require('sinon');
 var fastlog = require('../index.js');
 
 var util = require('util');
-if (!process.env.DEBUG) util.log = function() {};
-var spy = sinon.spy(util, 'log');
+var spy = sinon.spy(console, 'log');
 
 describe('string logging', function() {
     afterEach(function() { spy.reset(); });
     it('should use provided category', function() {
         var log = fastlog('security');
         log.debug('foo');
-        assert.ok(spy.calledWith('[debug] [security] foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'debug', 'security', 'foo'));
         assert.equal(spy.callCount, 1);
     });
 
@@ -24,11 +23,11 @@ describe('string logging', function() {
         log.error('foo');
         log.fatal('foo');
 
-        assert.ok(spy.calledWith('[debug] [default] foo'));
-        assert.ok(spy.calledWith('[info] [default] foo'));
-        assert.ok(spy.calledWith('[warn] [default] foo'));
-        assert.ok(spy.calledWith('[error] [default] foo'));
-        assert.ok(spy.calledWith('[fatal] [default] foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'debug', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'info', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'warn', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'error', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'fatal', 'default', 'foo'));
         assert.equal(spy.callCount, 5);
     });
 
@@ -41,11 +40,10 @@ describe('string logging', function() {
         log.error('foo');
         log.fatal('foo');
 
-        assert.ok(!spy.calledWith('[debug] [default] foo'));
-        assert.ok(spy.calledWith('[info] [default] foo'));
-        assert.ok(spy.calledWith('[warn] [default] foo'));
-        assert.ok(spy.calledWith('[error] [default] foo'));
-        assert.ok(spy.calledWith('[fatal] [default] foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'info', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'warn', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'error', 'default', 'foo'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'fatal', 'default', 'foo'));
         assert.equal(spy.callCount, 4);
     });
 
@@ -53,7 +51,7 @@ describe('string logging', function() {
         var log = fastlog();
         log.debug('there is a %s in my %s!', 'snake', 'boot');
 
-        assert.ok(spy.calledWith('[debug] [default] there is a snake in my boot!'));
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'debug', 'default', 'there is a snake in my boot!'));
     });
 
     it('should log error objects', function() {
@@ -67,7 +65,7 @@ describe('string logging', function() {
         err.culprit = 'sid';
         log.error(err);
 
-        assert.ok(spy.calledWith('[error] [default] Error: someone poisened the water hole!\n' +
+        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'error', 'default', 'Error: someone poisened the water hole!\n' +
             '    at Context.<anonymous> (/Users/willwhite/fastlog/test/fastlog.test.js:70:19)\n' +
             '    at Test.Runnable.run (/Users/willwhite/fastlog/node_modules/mocha/lib/runnable.js:211:32)\n' +
             '    culprit: sid'));
