@@ -18,11 +18,11 @@ module.exports = function(category, level) {
                 _(err).each(function(val, key) {
                     if (_(val).isString() || _(val).isNumber()) lines.push('    ' + key + ': ' + val);
                 });
-                util.log(util.format('[%s] [%s] %s', l, category, lines.join('\n')));
+                console.log('[%s] [%s] [%s] %s', new Date().toUTCString(), l, category, lines.join('\n'));
             } else {
                 // Normal string messages.
                 var message = util.format.apply(this, arguments);
-                util.log(util.format('[%s] [%s] %s', l, category, message));
+                console.log('[%s] [%s] [%s] %s', new Date().toUTCString(), l, category, message);
             }
         };
         return logger;
