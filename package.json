@@ -1,6 +1,6 @@
 {
   "name": "fastlog",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Stupid simple logging for Node.js.",
   "main": "index.js",
   "scripts": {
