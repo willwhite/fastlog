@@ -6,6 +6,9 @@
   "scripts": {
     "test": "mocha"
   },
+  "bin": {
+    "fastlog": "bin/fastlog.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/willwhite/fastlog.git"
