@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var split = require('split');
 var fastlog = require('..')(
   process.env.FASTLOG_CATEGORY || 'default',
   process.env.FASTLOG_LEVEL || 'info'
@@ -19,4 +20,9 @@ if (levels.indexOf(level) === -1) {
   process.exit(1);
 }
 
-fastlog[level](process.argv.shift());
+var message = process.argv.shift();
+if (message) return fastlog[level](message);
+
+process.stdin.pipe(split()).on('data', function(line) {
+  if (line) fastlog[level](line);
+});

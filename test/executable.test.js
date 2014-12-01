@@ -1,6 +1,7 @@
 var assert = require('assert');
 var util = require('util');
 var exec = require('child_process').exec;
+var spawn = require('child_process').spawn;
 var path = require('path');
 var fastlog = path.resolve(__dirname, '..', 'bin', 'fastlog.js');
 
@@ -8,7 +9,7 @@ describe('logging via bash', function() {
   it('should use default category', function(done) {
     exec([fastlog, 'info', 'foo'].join(' '), function(err, stdout, stderr) {
       assert.ifError(err, 'logged');
-      assert.ok(/^\[.+\] \[info\] \[default\] foo\n$/.exec(stdout), 'correct log');
+      assert.ok(/^\[.+\] \[info\] \[default\] foo\n$/.test(stdout), 'correct log');
       assert.equal(stderr, '', 'no stderr');
       done();
     });
@@ -19,7 +20,7 @@ describe('logging via bash', function() {
     opts.env.FASTLOG_CATEGORY = 'security';
     exec([fastlog, 'info', 'foo'].join(' '), opts, function(err, stdout, stderr) {
       assert.ifError(err, 'logged');
-      assert.ok(/^\[.+\] \[info\] \[security\] foo\n$/.exec(stdout), 'correct log');
+      assert.ok(/^\[.+\] \[info\] \[security\] foo\n$/.test(stdout), 'correct log');
       assert.equal(stderr, '', 'no stderr');
       done();
     });
@@ -38,7 +39,7 @@ describe('logging via bash', function() {
     opts.env.FASTLOG_LEVEL = 'debug';
     exec([fastlog, 'debug', 'foo'].join(' '), opts, function(err, stdout, stderr) {
       assert.ifError(err, 'logged');
-      assert.ok(/^\[.+\] \[debug\] \[default\] foo\n$/.exec(stdout), 'correct log');
+      assert.ok(/^\[.+\] \[debug\] \[default\] foo\n$/.test(stdout), 'correct log');
       assert.equal(stderr, '', 'no stderr');
       done();
     });
@@ -50,5 +51,20 @@ describe('logging via bash', function() {
       assert.equal(stderr, 'ERROR: invalid log level. Choose from debug, info, warn, error, fatal\n', 'error message');
       done();
     });
+  });
+  it('should listen to stdin when no message is specified', function(done) {
+    var proc = spawn(fastlog, [ 'info' ]);
+    var expected = [ 'foo', 'bar' ];
+    proc.on('close', function(code) {
+      assert.equal(code, 0, 'exit 0');
+      done();
+    });
+    proc.stdout.on('data', function(data) {
+      data = data.toString().split(' ').slice(-3);
+      var msg = expected.shift() + '\n';
+      assert.deepEqual(data, [ '[info]', '[default]', msg], 'correct message');
+    });
+    proc.stdin.write(expected.join('\n'));
+    proc.stdin.end();
   });
 });

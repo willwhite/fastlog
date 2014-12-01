@@ -21,6 +21,7 @@
     "sinon": "~1.7.3"
   },
   "dependencies": {
+    "split": "~0.3.1",
     "underscore": "~1.5.2"
   }
 }
