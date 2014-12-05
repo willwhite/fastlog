@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 var split = require('split');
+var args = require('minimist')(process.argv.slice(2));
+
 var fastlog = require('..')(
-  process.env.FASTLOG_CATEGORY || 'default',
+  args.category || 'default',
   process.env.FASTLOG_LEVEL || 'info'
 );
 
@@ -11,16 +13,13 @@ var levels = Object.keys(fastlog).reduce(function(memo, k) {
   return memo;
 }, []);
 
-process.argv.shift();
-process.argv.shift();
-
-var level = process.argv.shift();
+var level = args._.shift();
 if (levels.indexOf(level) === -1) {
   console.error('ERROR: invalid log level. Choose from ' + levels.join(', '));
   process.exit(1);
 }
 
-var message = process.argv.shift();
+var message = args._.shift();
 if (message) return fastlog[level](message);
 
 process.stdin.pipe(split()).on('data', function(line) {

@@ -14,11 +14,10 @@ describe('logging via bash', function() {
       done();
     });
   });
-  it('should abide by env var for category', function(done) {
+  it('should allow configuable category', function(done) {
     var opts = { env: {} };
     for (var k in process.env) opts.env[k] = process.env[k];
-    opts.env.FASTLOG_CATEGORY = 'security';
-    exec([fastlog, 'info', 'foo'].join(' '), opts, function(err, stdout, stderr) {
+    exec([fastlog, 'info', '--category', 'security', 'foo'].join(' '), opts, function(err, stdout, stderr) {
       assert.ifError(err, 'logged');
       assert.ok(/^\[.+\] \[info\] \[security\] foo\n$/.test(stdout), 'correct log');
       assert.equal(stderr, '', 'no stderr');
