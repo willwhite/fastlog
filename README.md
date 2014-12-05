@@ -53,7 +53,7 @@ You may also use fastlog in shell scripts. First, make sure fastlog is installed
 npm install -g fastlog
 ```
 
-**fastlog <level> [--category=<category>] [message]**
+**`fastlog <level> [--category=<category>] [message]`**
 
 ```sh
 > fastlog error --category important "You're my favorite deputy"
