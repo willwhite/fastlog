@@ -24,21 +24,13 @@ describe('logging via bash', function() {
       done();
     });
   });
-  it('should use default log level "info"', function(done) {
-    exec([fastlog, 'debug', 'foo'].join(' '), function(err, stdout, stderr) {
-      assert.ifError(err, 'logged');
-      assert.equal(stdout, '', 'correct log');
-      assert.equal(stderr, '', 'no stderr');
-      done();
-    });
-  });
   it('should use custom log levels', function(done) {
     var opts = { env: {} };
     for (var k in process.env) opts.env[k] = process.env[k];
-    opts.env.FASTLOG_LEVEL = 'debug';
+    opts.env.FASTLOG_LEVEL = 'error';
     exec([fastlog, 'debug', 'foo'].join(' '), opts, function(err, stdout, stderr) {
       assert.ifError(err, 'logged');
-      assert.ok(/^\[.+\] \[debug\] \[default\] foo\n$/.test(stdout), 'correct log');
+      assert.equal(stdout, '', 'correct log');
       assert.equal(stderr, '', 'no stderr');
       done();
     });
@@ -65,5 +57,16 @@ describe('logging via bash', function() {
     });
     proc.stdin.write(expected.join('\n'));
     proc.stdin.end();
+  });
+  it('should use a configured prefix', function(done) {
+    var opts = { env: {} };
+    for (var k in process.env) opts.env[k] = process.env[k];
+    opts.env.FASTLOG_PREFIX = '[${timestamp}] ${level} <${category}>';
+    exec([fastlog, 'info', 'foo'].join(' '), opts, function(err, stdout, stderr) {
+      assert.ifError(err, 'logged');
+      assert.ok(/^\[.+\] info <default> foo\n$/.test(stdout), 'correct log');
+      assert.equal(stderr, '', 'no stderr');
+      done();
+    });
   });
 });

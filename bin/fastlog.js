@@ -5,7 +5,8 @@ var args = require('minimist')(process.argv.slice(2));
 
 var fastlog = require('..')(
   args.category || 'default',
-  process.env.FASTLOG_LEVEL || 'info'
+  process.env.FASTLOG_LEVEL,
+  process.env.FASTLOG_PREFIX
 );
 
 var levels = Object.keys(fastlog).reduce(function(memo, k) {
