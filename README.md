@@ -15,7 +15,7 @@ var logger = require('fastlog')(category, level);
 Levels are (in order of severity) `debug`, `info`, `warn`, `error` and `fatal`.
 
 Both arguments are optional. `category` defaults to to "default" and `level`
-defaults to "info". Anything less severe than the given `level` will not be
+defaults to "debug". Anything less severe than the given `level` will not be
 logged.
 
 The logger functions take a string (interpolation optional):
@@ -23,18 +23,25 @@ The logger functions take a string (interpolation optional):
 ```javascript
 var logger = require('fastlog')('security', 'debug');
 logger.debug('there is a %s in my %s!', 'snake', 'boot');
->> 6 Jun 22:52:10 - [debug] [security] there is a snake in my boot!
+>> [Fri, 05 Dec 2014 02:10:48 GMT] [debug] [security] there is a snake in my boot!
 ```
 
 Or an Error object. Any string property that's tacked onto the object will
 be logged as well:
 
 ```javascript
-var err = new Error('someone poisened the water hole!');
+var err = new Error('someone poisoned the water hole!');
 err.culprit = 'sid';
 logger.error(err);
->> 6 Jun 22:53:38 - [error] [security] Error: someone poisened the water hole!
+>> [Fri, 05 Dec 2014 02:10:48 GMT] [error] [security] Error: someone poisened the water hole!
 >>     at Module.runMain (module.js:492:10)
 >>     at process.startup.processNextTick.process._tickCallback (node.js:244:9)
 >>     culprit: sid
+```
+
+You can format your own prefix as well:
+```javascript
+var logger = require('fastlog')('configured', 'error', '${level} [${ category }] <${timestamp}>');
+logger.error('This town ain\'t big enough for the two of us!');
+>> error [configured] <Fri, 05 Dec 2014 02:10:48 GMT> This town ain't big enough for the two of us!
 ```
