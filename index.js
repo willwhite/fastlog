@@ -1,12 +1,17 @@
 var _ = require('underscore');
 var util = require('util');
 
-module.exports = function(category, level) {
+module.exports = function(category, level, template) {
     category = category || 'default';
+    template = template || '[${timestamp}] [${level}] [${category}]';
     var levels = ['debug', 'info', 'warn', 'error', 'fatal'];
     return _(levels).reduce(function(logger, l) {
         logger[l] = function() {
             if (levels.indexOf(l) < levels.indexOf(level)) return;
+            var prefix = template
+                .replace(/\${ ?timestamp ?}/g, new Date().toUTCString())
+                .replace(/\${ ?level ?}/g, l)
+                .replace(/\${ ?category ?}/g, category);
             if (arguments[0] instanceof Error) {
                 var err = arguments[0];
                 // Error objects passed directly.
@@ -18,11 +23,12 @@ module.exports = function(category, level) {
                 _(err).each(function(val, key) {
                     if (_(val).isString() || _(val).isNumber()) lines.push('    ' + key + ': ' + val);
                 });
-                console.log('[%s] [%s] [%s] %s', new Date().toUTCString(), l, category, lines.join('\n'));
+
+                console.log('%s %s', prefix, lines.join('\n'));
             } else {
                 // Normal string messages.
                 var message = util.format.apply(this, arguments);
-                console.log('[%s] [%s] [%s] %s', new Date().toUTCString(), l, category, message);
+                console.log('%s %s', prefix, message);
             }
         };
         return logger;

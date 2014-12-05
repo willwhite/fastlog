@@ -10,7 +10,7 @@ describe('string logging', function() {
     it('should use provided category', function() {
         var log = fastlog('security');
         log.debug('foo');
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'debug', 'security', 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[debug\] \[security\]/), 'foo'));
         assert.equal(spy.callCount, 1);
     });
 
@@ -23,11 +23,11 @@ describe('string logging', function() {
         log.error('foo');
         log.fatal('foo');
 
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'debug', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'info', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'warn', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'error', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'fatal', 'default', 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[debug\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[info\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[warn\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[error\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[fatal\] \[default\]/), 'foo'));
         assert.equal(spy.callCount, 5);
     });
 
@@ -40,10 +40,10 @@ describe('string logging', function() {
         log.error('foo');
         log.fatal('foo');
 
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'info', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'warn', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'error', 'default', 'foo'));
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'fatal', 'default', 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[info\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[warn\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[error\] \[default\]/), 'foo'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[fatal\] \[default\]/), 'foo'));
         assert.equal(spy.callCount, 4);
     });
 
@@ -51,7 +51,7 @@ describe('string logging', function() {
         var log = fastlog();
         log.debug('there is a %s in my %s!', 'snake', 'boot');
 
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'debug', 'default', 'there is a snake in my boot!'));
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[debug\] \[default\]/), 'there is a snake in my boot!'));
     });
 
     it('should log error objects', function() {
@@ -65,9 +65,16 @@ describe('string logging', function() {
         err.culprit = 'sid';
         log.error(err);
 
-        assert.ok(spy.calledWith('[%s] [%s] [%s] %s', sinon.match.string, 'error', 'default', 'Error: someone poisened the water hole!\n' +
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[.+\] \[error\] \[default\]/), 'Error: someone poisened the water hole!\n' +
             '    at Context.<anonymous> (/Users/willwhite/fastlog/test/fastlog.test.js:70:19)\n' +
             '    at Test.Runnable.run (/Users/willwhite/fastlog/node_modules/mocha/lib/runnable.js:211:32)\n' +
             '    culprit: sid'));
+    });
+
+    it('should allow configurable template', function() {
+        var log = fastlog('configured', 'info', '[${level}] {${ category }} -- ${timestamp}:');
+        log.error('to infinity and beyond!');
+        assert.ok(spy.calledWith('%s %s', sinon.match(/\[error\] \{configured\} -- .+?:/), 'to infinity and beyond!'));
+        assert.equal(spy.callCount, 1);
     });
 });
