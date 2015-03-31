@@ -14,6 +14,16 @@ describe('string logging', function() {
         assert.equal(spy.callCount, 1);
     });
 
+    it('should return messages', function() {
+        var log = fastlog();
+
+        assert.ok(/\[.+\] \[debug\] \[default\] foo/.test(log.debug('foo')));
+        assert.ok(/\[.+\] \[info\] \[default\] foo/.test(log.info('foo')));
+        assert.ok(/\[.+\] \[warn\] \[default\] foo/.test(log.warn('foo')));
+        assert.ok(/\[.+\] \[error\] \[default\] foo/.test(log.error('foo')));
+        assert.ok(/\[.+\] \[fatal\] \[default\] foo/.test(log.fatal('foo')));
+    });
+
     it('should use different log levels', function() {
         var log = fastlog();
 

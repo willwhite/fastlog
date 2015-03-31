@@ -12,6 +12,7 @@ module.exports = function(category, level, template) {
                 .replace(/\${ ?timestamp ?}/g, new Date().toUTCString())
                 .replace(/\${ ?level ?}/g, l)
                 .replace(/\${ ?category ?}/g, category);
+            var msg;
             if (arguments[0] instanceof Error) {
                 var err = arguments[0];
                 // Error objects passed directly.
@@ -24,12 +25,14 @@ module.exports = function(category, level, template) {
                     if (_(val).isString() || _(val).isNumber()) lines.push('    ' + key + ': ' + val);
                 });
 
-                console.log('%s %s', prefix, lines.join('\n'));
+                msg = lines.join('\n');
             } else {
                 // Normal string messages.
-                var message = util.format.apply(this, arguments);
-                console.log('%s %s', prefix, message);
+                msg = util.format.apply(this, arguments);
             }
+
+            console.log('%s %s', prefix, msg);
+            return util.format('%s %s', prefix, msg);
         };
         return logger;
     }, {});
