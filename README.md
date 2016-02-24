@@ -33,7 +33,7 @@ be logged as well:
 var err = new Error('someone poisoned the water hole!');
 err.culprit = 'sid';
 logger.error(err);
-// [Fri, 05 Dec 2014 02:10:48 GMT] [error] [security] Error: someone poisened the water hole!
+// [Fri, 05 Dec 2014 02:10:48 GMT] [error] [security] Error: someone poisoned the water hole!
 //     at Module.runMain (module.js:492:10)
 //     at process.startup.processNextTick.process._tickCallback (node.js:244:9)
 //     culprit: sid
