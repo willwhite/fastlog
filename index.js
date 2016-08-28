@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var util = require('util');
 
-module.exports = function(category, level, template) {
+var fastlog = function(category, level, template) {
     category = category || 'default';
     template = template || '[${timestamp}] [${level}] [${category}]';
     var levels = ['debug', 'info', 'warn', 'error', 'fatal'];
@@ -34,6 +34,11 @@ module.exports = function(category, level, template) {
             console.log('%s %s', prefix, msg);
             return util.format('%s %s', prefix, msg);
         };
+        logger[l].extend = function(prefix) {
+            return fastlog(category, level, template + '[' + prefix + ']');
+        };
         return logger;
     }, {});
 };
+
+module.exports = fastlog;
