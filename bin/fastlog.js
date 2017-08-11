@@ -4,7 +4,7 @@ var split = require('split');
 var args = require('minimist')(process.argv.slice(2));
 
 var fastlog = require('..')(
-  args.category || 'default',
+  args.category || process.env.FASTLOG_CATEGORY || 'default',
   process.env.FASTLOG_LEVEL,
   process.env.FASTLOG_PREFIX
 );
