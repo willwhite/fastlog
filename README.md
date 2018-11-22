@@ -46,6 +46,18 @@ logger.error('This town ain\'t big enough for the two of us!');
 // error [configured] <Fri, 05 Dec 2014 02:10:48 GMT> This town ain't big enough for the two of us!
 ```
 
+It's also possible to set a global prefix:
+- Configure global prefix by specifying a `FASTLOG_GLOBAL_PREFIX` environment variable.
+```javascript
+process.env.FASTLOG_GLOBAL_PREFIX = '[ipAddress]';
+```
+
+```javascript
+var logger = require('fastlog')('configured', 'error', '${level} [${ category }] <${timestamp}>');
+logger.error('You\'ve got a friend in me.');
+// [ipAddress] error [configured] <Fri, 05 Dec 2014 02:10:48 GMT> You've got a friend in me.
+```
+
 ## Usage via shell scripts
 
 You may also use fastlog in shell scripts. First, make sure fastlog is installed globally

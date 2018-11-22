@@ -2,7 +2,6 @@ var assert = require('assert');
 var sinon = require('sinon');
 var fastlog = require('../index.js');
 
-var util = require('util');
 var spy = sinon.spy(console, 'log');
 
 describe('string logging', function() {
@@ -86,5 +85,15 @@ describe('string logging', function() {
         log.error('to infinity and beyond!');
         assert.ok(spy.calledWith('%s %s', sinon.match(/\[error\] \{configured\} -- .+?:/), 'to infinity and beyond!'));
         assert.equal(spy.callCount, 1);
+    });
+
+    it('should include FASTLOG_GLOBAL_PREFIX in prefix', function() {
+        process.env.FASTLOG_GLOBAL_PREFIX = '[global prefix]';
+        var log = fastlog();
+        log.error('reach for the sky!');
+        assert.ok(
+            spy.calledWith('%s %s', sinon.match(/\[global prefix\] \[.+\] \[error\] \[default\]/), 'reach for the sky!')
+        );
+        delete process.env.FASTLOG_GLOBAL_PREFIX;
     });
 });
