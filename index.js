@@ -4,6 +4,10 @@ var util = require('util');
 module.exports = function(category, level, template) {
     category = category || 'default';
     template = template || '[${timestamp}] [${level}] [${category}]';
+    if (process.env.FASTLOG_GLOBAL_PREFIX) {
+        template = process.env.FASTLOG_GLOBAL_PREFIX + ' ' + template;
+    }
+
     var levels = ['debug', 'info', 'warn', 'error', 'fatal'];
     return _(levels).reduce(function(logger, l) {
         logger[l] = function() {
