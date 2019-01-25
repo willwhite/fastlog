@@ -6,7 +6,8 @@ var util = require('util');
 var spy = sinon.spy(console, 'log');
 
 describe('string logging', function() {
-    afterEach(function() { spy.reset(); });
+    beforeEach(function() { spy.resetHistory(); });
+
     it('should use provided category', function() {
         var log = fastlog('security');
         log.debug('foo');
@@ -53,7 +54,7 @@ describe('string logging', function() {
         assert.equal(spy.callCount, 5);
     });
 
-    it('should not log message less critial that configured level', function() {
+    it('should not log message less critical that configured level', function() {
         var log = fastlog('default', 'info');
 
         log.debug('foo');
