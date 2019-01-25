@@ -24,6 +24,18 @@ describe('string logging', function() {
         assert.ok(/\[.+\] \[fatal\] \[default\] foo/.test(log.fatal('foo')));
     });
 
+    it('should respect env FASTLOG_LEVEL', function() {
+        process.env.FASTLOG_LEVEL = 'warn';
+        var log = fastlog();
+
+        assert.equal(log.debug('foo'), undefined);
+        assert.equal(log.info('foo'), undefined);
+        assert.ok(/\[.+\] \[warn\] \[default\] foo/.test(log.warn('foo')));
+        assert.ok(/\[.+\] \[error\] \[default\] foo/.test(log.error('foo')));
+        assert.ok(/\[.+\] \[fatal\] \[default\] foo/.test(log.fatal('foo')));
+        delete process.env.FASTLOG_LEVEL;
+    });
+
     it('should use different log levels', function() {
         var log = fastlog();
 
