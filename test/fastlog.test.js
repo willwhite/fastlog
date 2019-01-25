@@ -6,7 +6,8 @@ var util = require('util');
 var spy = sinon.spy(console, 'log');
 
 describe('string logging', function() {
-    afterEach(function() { spy.reset(); });
+    beforeEach(function() { spy.resetHistory(); });
+
     it('should use provided category', function() {
         var log = fastlog('security');
         log.debug('foo');
@@ -22,6 +23,18 @@ describe('string logging', function() {
         assert.ok(/\[.+\] \[warn\] \[default\] foo/.test(log.warn('foo')));
         assert.ok(/\[.+\] \[error\] \[default\] foo/.test(log.error('foo')));
         assert.ok(/\[.+\] \[fatal\] \[default\] foo/.test(log.fatal('foo')));
+    });
+
+    it('should respect env FASTLOG_LEVEL', function() {
+        process.env.FASTLOG_LEVEL = 'warn';
+        var log = fastlog();
+
+        assert.equal(log.debug('foo'), undefined);
+        assert.equal(log.info('foo'), undefined);
+        assert.ok(/\[.+\] \[warn\] \[default\] foo/.test(log.warn('foo')));
+        assert.ok(/\[.+\] \[error\] \[default\] foo/.test(log.error('foo')));
+        assert.ok(/\[.+\] \[fatal\] \[default\] foo/.test(log.fatal('foo')));
+        delete process.env.FASTLOG_LEVEL;
     });
 
     it('should use different log levels', function() {
@@ -41,7 +54,7 @@ describe('string logging', function() {
         assert.equal(spy.callCount, 5);
     });
 
-    it('should not log message less critial that configured level', function() {
+    it('should not log message less critical that configured level', function() {
         var log = fastlog('default', 'info');
 
         log.debug('foo');

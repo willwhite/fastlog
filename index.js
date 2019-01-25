@@ -4,6 +4,7 @@ var util = require('util');
 module.exports = function(category, level, template) {
     category = category || 'default';
     template = template || '[${timestamp}] [${level}] [${category}]';
+    level = level || process.env.FASTLOG_LEVEL || 'debug';
     var levels = ['debug', 'info', 'warn', 'error', 'fatal'];
     return _(levels).reduce(function(logger, l) {
         logger[l] = function() {
